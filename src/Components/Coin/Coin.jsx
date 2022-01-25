@@ -13,10 +13,8 @@ export default class Coin extends Component {
 
   constructor(props){
     super(props);
-    this.state = {
-      price: this.props.price
-    }
-    this.handleClick = this.handleClick.bind(this); //aceasta linie este pentru a face legatura  dintre handleClick si state-ul care trebuie
+    //this.handleClick = this.handleClick.bind(this); aceasta linie este pentru a face legatura  dintre handleClick si state-ul care trebuie
+    this.handleClick=this.handleClick.bind(this);
   }
 
 /*
@@ -42,21 +40,24 @@ export default class Coin extends Component {
   handleClick(event){
     //prevent the default action of submitting the form
       event.preventDefault();
-      
+
+      this.props.handleRefresh(this.props.ticker);
+      /*
       const randomPercentage = 0.995 + Math.random() * 0.01;
       this.setState(function(oldState){
         return{
           price: oldState.price * randomPercentage
         }
       });    
-
+*/
   }
+
   render() {
         return ( //in react nu ai nevoie de ${}. poti doar {}
             <tr>
                 <Td>{this.props.name}</Td>
                 <Td>{this.props.ticker}</Td>
-                <Td>${this.state.price}</Td>
+                <Td>${this.props.price}</Td>
                 <Td>
                   <form action="#" method="POST">
                     <button onClick={this.handleClick}>Refresh</button>
