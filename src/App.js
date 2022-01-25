@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import CoinList from './Components/CoinList/CoinList';
 import AccountBalance from './Components/AccountBalance/AccountBalance'
 import Header from './Components/Header/Header';
@@ -7,7 +6,7 @@ import styled from 'styled-components';
 
 //import { v4 as uuidv4 } from 'uuid';
 
-const DIVV = styled.divv`
+const DIVV = styled.div`
   text-align: center;
   background-color: rgb(97, 97, 133);
   color: #cccccc;
