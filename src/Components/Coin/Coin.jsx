@@ -11,12 +11,6 @@ const Td = styled.td`
 
 export default class Coin extends Component {
 
-  constructor(props){
-    super(props);
-    //this.handleClick = this.handleClick.bind(this); aceasta linie este pentru a face legatura  dintre handleClick si state-ul care trebuie
-    this.handleClick=this.handleClick.bind(this);
-  }
-
 /*
   componentDidMount(){
     const callback = () => {
@@ -37,7 +31,7 @@ export default class Coin extends Component {
     setInterval( callback, 1000);
   }*/
 
-  handleClick(event){
+  handleClick = (event) => {
     //prevent the default action of submitting the form
       event.preventDefault();
 

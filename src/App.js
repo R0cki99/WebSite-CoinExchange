@@ -14,10 +14,7 @@ const DIVV = styled.div`
 
 
 class App extends React.Component {
-
-  constructor(props){
-    super(props);
-    this.state = {
+      state = {
       balance: 10000,
       showBalance: true,
       coinData: [
@@ -41,14 +38,13 @@ class App extends React.Component {
         }
       ]
     }
-      this.handleRefresh=this.handleRefresh.bind(this);
-      this.handleBalanceVisibilityChange=this.handleBalanceVisibilityChange.bind(this);
-  }
+
+  classProperty = 'value'
+
 //de fiecare data cand facem render la o lista trebuie sa adaugam "un key"
 
-
-  handleRefresh(valueChangeTicker){
-      const newCoinData = this.state.coinData.map( function( {ticker, name, price} ){
+  handleRefresh = (valueChangeTicker) => {
+      const newCoinData = this.state.coinData.map( function( {ticker, name, balance, price} ){
         let newPrice = price;
           if( valueChangeTicker === ticker ) {
             const randomPercentage = 0.995 + Math.random() * 0.01;
@@ -57,13 +53,14 @@ class App extends React.Component {
             return {
               ticker: ticker,
               name: name,
+              balance: balance,
               price: newPrice
             }
       });
 
       this.setState({ coinData: newCoinData }); //nepunand si balance-ul, acesta va ramane intact. Doar coin data se schimba
   }
-  handleBalanceVisibilityChange(){
+  handleBalanceVisibilityChange = () => {
     this.setState( function(oldState) {
         return {
           ...oldState,
