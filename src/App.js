@@ -1,9 +1,17 @@
 import React from 'react';
 import './App.css';
-import logo from './logo.svg';
-import Coin from './Components/Coin/Coin';
+import CoinList from './Components/CoinList/CoinList';
 import AccountBalance from './Components/AccountBalance/AccountBalance'
+import Header from './Components/Header/Header';
+import styled from 'styled-components';
+
 //import { v4 as uuidv4 } from 'uuid';
+
+const DIVV = styled.divv`
+  text-align: center;
+  background-color: rgb(97, 97, 133);
+  color: #cccccc;
+`;
 
 
 class App extends React.Component {
@@ -34,37 +42,14 @@ class App extends React.Component {
 //de fiecare data cand facem render la o lista trebuie sa adaugam "un key"
   render(){
     return (
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} alt="React logo" className="App-logo"></img>
-            <h1 className="App-title">Coin Exchange </h1>
-            
-          </header>
+        <DIVV>
+          <Header />
           <AccountBalance amount={this.state.balance} />
-          <table className="Coin-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Ticker</th>
-                <th>Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                //this.state.coinData.map( x => <Coin key= {x.ticker} name =  {x.name} ticker = {x.ticker} price = {x.price} 
-                ///>)     //metoda de mai jos se numeste: Destructuring
-                  this.state.coinData.map( ({name, ticker, price}) => <Coin key= {ticker} name =  {name} ticker = {ticker} price = {price} 
-                 />)    
-                // this.state.coinData.map( value => <Coin key= {value.ticker} {...value} />)    
-              }
-    
-              
-            </tbody>
-          </table>
-        </div>
+          <CoinList coinData={this.state.coinData} />
+        </DIVV>
       );
   }
   
 }
-
+//cand in app.js se schimba o varabila, si celelalte componente/copii isi dau iar re-render()
 export default App;
