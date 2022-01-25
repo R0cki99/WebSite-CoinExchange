@@ -19,25 +19,30 @@ class App extends React.Component {
     super(props);
     this.state = {
       balance: 10000,
+      showBalance: true,
       coinData: [
         {
           name: 'Bitcoin', 
           ticker: 'BTC',
+          balance: 0.5,
           price: 9999.99
         },
         {
           name: 'Ethereum', 
           ticker: 'ETH',
+          balance: 2,
           price: 2000.99         
         },
         {
           name: 'Polkadot', 
           ticker: 'DOT',
+          balance: 33,
           price: 15.99         
         }
       ]
     }
       this.handleRefresh=this.handleRefresh.bind(this);
+      this.handleBalanceVisibilityChange=this.handleBalanceVisibilityChange.bind(this);
   }
 //de fiecare data cand facem render la o lista trebuie sa adaugam "un key"
 
@@ -58,14 +63,24 @@ class App extends React.Component {
 
       this.setState({ coinData: newCoinData }); //nepunand si balance-ul, acesta va ramane intact. Doar coin data se schimba
   }
- 
-
+  handleBalanceVisibilityChange(){
+    this.setState( function(oldState) {
+        return {
+          ...oldState,
+          showBalance: !oldState.showBalance
+        }
+    })
+  }
   render(){
     return (
         <DIVV>
           <Header />
-          <AccountBalance amount={this.state.balance} />
-          <CoinList coinData={this.state.coinData} handleRefresh={this.handleRefresh} />
+          <AccountBalance amount={this.state.balance} showBalance={this.state.showBalance} handleBalanceVisibilityChange={this.handleBalanceVisibilityChange} />
+          <CoinList
+          coinData={this.state.coinData} 
+          showBalance={this.state.showBalance}
+          handleRefresh={this.handleRefresh} 
+          />
         </DIVV>
       );
   }

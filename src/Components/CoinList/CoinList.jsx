@@ -18,17 +18,21 @@ export default class CoinList extends Component {
                 <th>Name</th>
                 <th>Ticker</th>
                 <th>Price</th>
+                {this.props.showBalance ? <th>Balance</th> : null}
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {
                 //this.state.coinData.map( x => <Coin key= {x.ticker} name =  {x.name} ticker = {x.ticker} price = {x.price} 
                 ///>)     //metoda de mai jos se numeste: Destructuring
-                  this.props.coinData.map( ({name, ticker, price}) => 
+                  this.props.coinData.map( ({name, ticker, price, balance, showBalance}) => 
                   <Coin key= {ticker} 
                         handleRefresh={this.props.handleRefresh}
                         name =  {name} 
                         ticker = {ticker}
+                        showBalance ={this.props.showBalance}
+                        balance = {balance}
                         price = {price} 
                  />)    
                 // this.state.coinData.map( value => <Coin key= {value.ticker} {...value} />)    
