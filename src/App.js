@@ -1,16 +1,20 @@
 import React from 'react';
 import CoinList from './Components/CoinList/CoinList';
-import AccountBalance from './Components/AccountBalance/AccountBalance'
+import AccountBalance from './Components/AccountBalance/AccountBalance';
+import APITable from './Components/APITable/APITable';
 import Header from './Components/Header/Header';
 import styled from 'styled-components';
+import axios from 'axios';
 
 //import { v4 as uuidv4 } from 'uuid';
 
-const DIVV = styled.div`
+const COIN_COUNT = 10;
+
+const BODY = styled.body`
   text-align: center;
   background-color: rgb(97, 97, 133);
   color: #cccccc;
-`;
+`
 
 
 class App extends React.Component {
@@ -18,6 +22,7 @@ class App extends React.Component {
       balance: 10000,
       showBalance: true,
       coinData: [
+        /*
         {
           name: 'Bitcoin', 
           ticker: 'BTC',
@@ -35,10 +40,33 @@ class App extends React.Component {
           ticker: 'DOT',
           balance: 33,
           price: 15.99         
-        }
+        }*/
       ]
     }
 
+    componentDidMount = async () => {
+      const response = await axios.get('https://api.coinpaprika.com/v1/coins')   
+      const coinIDs = response.data.slice(0, COIN_COUNT).map(coin => coin.id);
+      const tickerURL = 'https://api.coinpaprika.com/v1/tickers/';
+      const promises = coinIDs.map( id => axios.get(tickerURL + id));
+      const coinData = await Promise.all(promises);
+      const coinPriceData = coinData.map(function(response) {
+          const coin = response.data;
+          return {
+            key: coin.id,
+            name: coin.name,
+            ticker: coin.symbol,
+            balance: 0,
+            price: parseFloat(Number(coin.quotes.USD.price).toFixed(4)),
+          };
+      })
+      //retreive the prices
+      this.setState({coinData: coinPriceData});
+    }
+/*
+    componentDidUpdate = () => {
+      console.log('UPDATE');  //cand facem render, se face DidUpdate. Cand facem refresh la pagina, se face mount-ul
+    }*/
   classProperty = 'value'
 
 //de fiecare data cand facem render la o lista trebuie sa adaugam "un key"
@@ -70,7 +98,8 @@ class App extends React.Component {
   }
   render(){
     return (
-        <DIVV>
+      
+        <BODY>
           <Header />
           <AccountBalance amount={this.state.balance} showBalance={this.state.showBalance} handleBalanceVisibilityChange={this.handleBalanceVisibilityChange} />
           <CoinList
@@ -78,7 +107,14 @@ class App extends React.Component {
           showBalance={this.state.showBalance}
           handleRefresh={this.handleRefresh} 
           />
-        </DIVV>
+
+          <APITable />
+          
+          
+
+          
+        </BODY>
+        
       );
   }
   
