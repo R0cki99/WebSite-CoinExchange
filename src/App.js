@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import CoinList from './Components/CoinList/CoinList';
 import AccountBalance from './Components/AccountBalance/AccountBalance';
 import APITable from './Components/APITable/APITable';
@@ -15,36 +15,15 @@ const BODY = styled.body`
   background-color: rgb(97, 97, 133);
   color: #cccccc;
 `
+const formatPrice = price => parseFloat(Number(price).toFixed(4));
 
+function App(props){
+ 
+    const [balance, setBalance] = useState(10000);
+    const [showBalance, setShowBalance] = useState(true);
+    const [coinData, setCoinData] = useState([]);
 
-class App extends React.Component {
-      state = {
-      balance: 10000,
-      showBalance: true,
-      coinData: [
-        /*
-        {
-          name: 'Bitcoin', 
-          ticker: 'BTC',
-          balance: 0.5,
-          price: 9999.99
-        },
-        {
-          name: 'Ethereum', 
-          ticker: 'ETH',
-          balance: 2,
-          price: 2000.99         
-        },
-        {
-          name: 'Polkadot', 
-          ticker: 'DOT',
-          balance: 33,
-          price: 15.99         
-        }*/
-      ]
-    }
-
-    componentDidMount = async () => {
+  const componentDidMount = async () => {
       const response = await axios.get('https://api.coinpaprika.com/v1/coins')   
       const coinIDs = response.data.slice(0, COIN_COUNT).map(coin => coin.id);
       const tickerURL = 'https://api.coinpaprika.com/v1/tickers/';
@@ -57,55 +36,59 @@ class App extends React.Component {
             name: coin.name,
             ticker: coin.symbol,
             balance: 0,
-            price: parseFloat(Number(coin.quotes.USD.price).toFixed(4)),
+            price: formatPrice(coin.quotes.USD.price),
           };
       })
       //retreive the prices
-      this.setState({coinData: coinPriceData});
+      //this.setState({coinData: coinPriceData});
+      setCoinData(coinPriceData);
     }
+    useEffect(function(){
+      if(coinData.length === 0 ){
+        //we are in component did mount
+        componentDidMount();
+      }else{
+        //we are in component did update
+      }
+    });
+
+
 /*
     componentDidUpdate = () => {
       console.log('UPDATE');  //cand facem render, se face DidUpdate. Cand facem refresh la pagina, se face mount-ul
     }*/
-  classProperty = 'value'
+  //classProperty = 'value'
 
 //de fiecare data cand facem render la o lista trebuie sa adaugam "un key"
 
-  handleRefresh = (valueChangeTicker) => {
-      const newCoinData = this.state.coinData.map( function( {ticker, name, balance, price} ){
-        let newPrice = price;
-          if( valueChangeTicker === ticker ) {
-            const randomPercentage = 0.995 + Math.random() * 0.01;
-            newPrice = newPrice * randomPercentage;
+ const handleRefresh = async (valueChangeId) => {
+      const tickerURL = `https://api.coinpaprika.com/v1/tickers/${valueChangeId}`;
+      const response = await axios.get(tickerURL);
+      const newPrice = formatPrice(response.data.quotes.USD.price);
+      const newCoinData = coinData.map( function( values ){
+        let newValues = {...values};
+          if( valueChangeId === values.key ) {
+            newValues.price = newPrice;
             }
-            return {
-              ticker: ticker,
-              name: name,
-              balance: balance,
-              price: newPrice
-            }
+            return newValues;
       });
 
-      this.setState({ coinData: newCoinData }); //nepunand si balance-ul, acesta va ramane intact. Doar coin data se schimba
+      //this.setState({ coinData: newCoinData }); //nepunand si balance-ul, acesta va ramane intact. Doar coin data se schimba
+      setCoinData(newCoinData);
+    }
+ const handleBalanceVisibilityChange = () => {
+    setShowBalance(oldValue => !oldValue);
   }
-  handleBalanceVisibilityChange = () => {
-    this.setState( function(oldState) {
-        return {
-          ...oldState,
-          showBalance: !oldState.showBalance
-        }
-    })
-  }
-  render(){
+
     return (
       
         <BODY>
           <Header />
-          <AccountBalance amount={this.state.balance} showBalance={this.state.showBalance} handleBalanceVisibilityChange={this.handleBalanceVisibilityChange} />
+          <AccountBalance amount={balance} showBalance={showBalance} handleBalanceVisibilityChange={handleBalanceVisibilityChange} />
           <CoinList
-          coinData={this.state.coinData} 
-          showBalance={this.state.showBalance}
-          handleRefresh={this.handleRefresh} 
+          coinData={coinData} 
+          showBalance={showBalance}
+          handleRefresh={handleRefresh} 
           />
 
           <APITable />
@@ -116,8 +99,7 @@ class App extends React.Component {
         </BODY>
         
       );
-  }
-  
+   
 }
 //cand in app.js se schimba o varabila, si celelalte componente/copii isi dau iar re-render()
 export default App;

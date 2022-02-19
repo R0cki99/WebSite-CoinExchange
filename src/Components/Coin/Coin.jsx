@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
@@ -9,7 +9,7 @@ const Td = styled.td`
 `;
 
 
-export default class Coin extends Component {
+export default function Coin(props) {
 
 /*
   componentDidMount(){
@@ -31,11 +31,11 @@ export default class Coin extends Component {
     setInterval( callback, 1000);
   }*/
 
-  handleClick = (event) => {
+ const handleClick = (event) => {
     //prevent the default action of submitting the form
       event.preventDefault();
 
-      this.props.handleRefresh(this.props.ticker);
+      props.handleRefresh(props.tickerid);
       /*
       const randomPercentage = 0.995 + Math.random() * 0.01;
       this.setState(function(oldState){
@@ -45,23 +45,21 @@ export default class Coin extends Component {
       });    
 */
   }
-
-  render() {
         return ( //in react nu ai nevoie de ${}. poti doar {}
             <tr>
-                <Td>{this.props.name}</Td>
-                <Td>{this.props.ticker}</Td>
-                <Td>${this.props.price}</Td>
-                {this.props.showBalance ? <Td>${this.props.balance}</Td> : null}
+                <Td>{props.name}</Td>
+                <Td>{props.ticker}</Td>
+                <Td>${props.price}</Td>
+                {props.showBalance ? <Td>${props.balance}</Td> : null}
                 <Td>
                   <form action="#" method="POST">
-                    <button onClick={this.handleClick}>Refresh</button>
+                    <button onClick={handleClick}>Refresh</button>
                   </form>
                 </Td>
             </tr>
               );
   }
-}
+
 
 Coin.propTypes = {  //definim daca o variabila e nr sau string
     name: PropTypes.string.isRequired,

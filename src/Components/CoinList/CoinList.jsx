@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Coin from '../Coin/Coin';
 import styled from 'styled-components';
 
@@ -9,8 +9,7 @@ const Table = styled.table`
 `;
 
 
-export default class CoinList extends Component {
-  render() {
+export default function CoinList(props){
     return (
         <Table>
             <thead>
@@ -18,7 +17,7 @@ export default class CoinList extends Component {
                 <th>Name</th>
                 <th>Ticker</th>
                 <th>Price</th>
-                {this.props.showBalance ? <th>Balance</th> : null}
+                {props.showBalance ? <th>Balance</th> : null}
                 <th>Actions</th>
               </tr>
             </thead>
@@ -26,14 +25,15 @@ export default class CoinList extends Component {
               {
                 //this.state.coinData.map( x => <Coin key= {x.ticker} name =  {x.name} ticker = {x.ticker} price = {x.price} 
                 ///>)     //metoda de mai jos se numeste: Destructuring
-                  this.props.coinData.map( ({key, name, ticker, price, balance, showBalance}) => 
+                  props.coinData.map( ({key, name, ticker, price, balance, showBalance}) => 
                   <Coin key= {key} 
-                        handleRefresh={this.props.handleRefresh}
+                        handleRefresh={props.handleRefresh}
                         name =  {name} 
                         ticker = {ticker}
-                        showBalance ={this.props.showBalance}
+                        showBalance ={props.showBalance}
                         balance = {balance}
                         price = {price} 
+                        tickerid = {key}
                  />)    
                 // this.state.coinData.map( value => <Coin key= {value.ticker} {...value} />)    
                 //PROPS DRILLING -> APP.js -> CoinList -> Coin.  this.state...->this.props...->this.props...
@@ -43,5 +43,4 @@ export default class CoinList extends Component {
             </tbody>
           </Table>
     )
-  }
 }
